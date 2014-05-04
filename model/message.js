@@ -30,8 +30,7 @@ var MessageDAO = function(){};
 module.exports = new MessageDAO();
 
 
-MessageDAO.prototype.save = function(message, is_reply, callback) {
-	message.Status = is_reply;
+MessageDAO.prototype.save = function(message, callback) {
   Message.create(message, function(err, obj){
     callback(err, obj);
   });

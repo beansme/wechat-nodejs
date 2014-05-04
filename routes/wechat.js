@@ -1,9 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var wechat = require('wechat');
-var redis = require("redis"),
-    redisClient = redis.createClient(6379, '127.0.0.1', 0);
-
 
 router.get('/:wechat_token', wechat('szu_token', function(req, res, next){
 
@@ -12,14 +9,16 @@ router.get('/:wechat_token', wechat('szu_token', function(req, res, next){
 
 router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message, req, res, next) {
       var message = req.weixin;
-       if (message.FromUserName === '屌丝') {
-         // 回复屌丝(普通回复)
+       if (message.Content === '屌丝') {
+
          res.reply('hehe');
      }
     }).voice(function (message, req, res, next) {
      
-    }).video(function (message, req, res, next) {
-       
+    }).image(function (message, req, res, next) {
+        var Message = require('../model/message');
+        Message.save(message, function(err, result){console.log(result)});
+        
     }).location(function (message, req, res, next) {
       
     }).link(function (message, req, res, next) {

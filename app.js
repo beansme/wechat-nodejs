@@ -6,7 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
-var wechat = require('./routes/wechat');
+var wechatRoute = require('./routes/wechat');
+var qiniuRoute = require('./routes/qiniu');
 
 var app = express();
 
@@ -22,7 +23,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/wechat', wechat);
+app.use('/wechat', wechatRoute);
+app.use('/qiniu', qiniuRoute);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
