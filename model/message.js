@@ -31,10 +31,16 @@ module.exports = new MessageDAO();
 
 
 MessageDAO.prototype.save = function(message, callback) {
-  Message.create(message, function(err, obj){
-    callback(err, obj);
-  });
-
+	Message.find({MsgId: message.MsgId}, function(err, messages){
+		if(messages.length === 0){
+				Message.create(message, function(err, obj){
+	    	callback(err, obj);
+  		});
+		} else {
+			callback(err, messages);
+		}
+	});
+		
 };
 
 MessageDAO.prototype.reply = function(client, openid, meida, callback) {

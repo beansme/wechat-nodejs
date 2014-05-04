@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var wechatRoute = require('./routes/wechat');
 var qiniuRoute = require('./routes/qiniu');
-
+var testRoute = require('./routes/test');
 var app = express();
 
 // view engine setup
@@ -23,6 +23,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use('/test', testRoute);
 app.use('/wechat', wechatRoute);
 app.use('/qiniu', qiniuRoute);
 
