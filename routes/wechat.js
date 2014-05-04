@@ -5,32 +5,12 @@ var redis = require("redis"),
     redisClient = redis.createClient(6379, '127.0.0.1', 0);
 
 
-
-router.param('wechat_token', function(req, res, next, wechat_token) {
-    req.wechat_token = wechat_token;
-    var Client = require('../model/client');
-    Client.first(wechat_token, function(err, client){
-    	if (err) {
-  			console.log(err);
-    	} else {
-            if(client === undefined){
-                res.writeHead(200);
-                res.end();
-            }
-    		req.client = client;
-            redisClient.incr(client.client_id+':total.message');
-    		next();	
-    	};
-    });
-    
-});
-
-router.get('/:wechat_token', wechat('token', function(req, res, next){
+router.get('/:wechat_token', wechat('szu_token', function(req, res, next){
 
 }));
 
 
-router.post('/:wechat_token', wechat('token', wechat.text(function (message, req, res, next) {
+router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message, req, res, next) {
         //test data
         var message = {ToUserName: 'gh_44e8155eca9d',FromUserName: 'o094_t0a2KTqu2OKLHgYlgoi2j_0',CreateTime: '1359125035',MsgType: 'text',Content: 'test',MsgId: '5837397576500011341'};
 
