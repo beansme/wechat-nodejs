@@ -2,23 +2,126 @@ var express = require('express');
 var router = express.Router();
 var wechat = require('wechat');
 
+
+
+
+/**
+ * [description]
+ * @param  {[type]}   req  [description]
+ * @param  {[type]}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 router.get('/:wechat_token', wechat('szu_token', function(req, res, next){
 
 }));
 
 
+
+
+/**
+ * test
+ */
+
+// router.use(wechat('szu_token', function (req, res, next) {
+//     var message = req.weixin;
+//     console.log(message);
+//     if (typeof(req.wxsession.postmode) !=='undefined' && req.wxsession.postmode === 1) {
+//         if(typeof(req.wxsession.postbanner) !=='undefined' && req.wxsession.postbanner === 1 ) {
+//             //正文
+//             if(info.MsgType === 'text') {
+               
+//                 if(info.Content === '完成') {
+//                   //store post
+//                   res.reply('完成，url');
+//                 } else if (info.Content === '取消') {
+//                   req.wxsession.postmode = 0;
+//                   res.reply('已取消');
+//                 } else {
+//                     //处理文字
+//                 }
+//             } else if(info.MsgType === 'image') {
+//                 req.wxsession.postbanner = 1
+//                 res.reply('请输入正文');
+//                 //处理图片
+//             }
+          
+//         } else {
+//             if(message.MsgType === 'image') {
+//                 //处理banner图片
+//             } else {
+//                 res.reply('发送图片或 取消 ');
+//             }
+//         }
+//     }
+
+//     next();
+
+// }));
+
+/**
+ * end test
+ */
+
+
+
 router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message, req, res, next) {
       var message = req.weixin;
-       if (message.Content === '屌丝') {
+      if(req.wxsession.postmode === 1) {
+           if(req.wxsession.postbanner === 1 ) {
+              //正文
+              if(info.MsgType === 'text') {
+                 
+                  if(info.Content === '完成') {
+                    //store post
+                    res.reply('完成，url');
+                  } else if (info.Content === '取消') {
+                    req.wxsession.postmode = 0;
+                    res.reply('已取消');
+                  } else {
+                      //处理文字
+                  }
+              }
+          } else {
+              res.reply('发送图片或 取消 ');
+          }
+      }
+        if (message.Content === '屌丝') {
+            res.reply('hehe');
+        }
+        if(message.Content == '发布') {
+            req.wxsession.postmode = 1;
+            req.wxsession.postbanner === 0;
+            res.reply('进入发布模式，请上传banner图片');
+        }
 
-         res.reply('hehe');
-     }
     }).voice(function (message, req, res, next) {
      
     }).image(function (message, req, res, next) {
-        var Message = require('../model/message');
-        Message.save(message, function(err, result){console.log(result)});
+        if(req.wxsession.postmode === 1) {
+             if(req.wxsession.postbanner === 1 ) {
+                //正文图片
+                res.reply('正文图片');
+                
+             } else {
+                req.wxsession.postbanner = 1
+                res.reply('请输入正文');
+             }
+         }
         
+        //处理图片
+        // var Message = require('../model/message');
+        // Message.save(message, function(err, result){console.log(result)});
+        //     var API = require('wechat').API;
+        //     var qiniu = require('../controller/qiniu');
+        //     var api = new API('wx380c0d5a96fccbf5', 'd12942b505f8fcc98e77918ddd0ab0f8');
+        //     api.getMedia('2AFTZKiM-tmhGkPSxM0uaifF1NsgqWyU-FPFdH4_O8Sh3cMSU8ipoN0zni3w-n4l', function(err, result){
+        //     qiniu.upload(result, null, qiniu.uptoken, function(err, ret){
+        //         //save to database
+        //         console.log(err);
+        //         console.log(ret);
+        //     });
+        //     });
     }).location(function (message, req, res, next) {
       
     }).link(function (message, req, res, next) {

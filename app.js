@@ -4,6 +4,7 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session    = require('express-session');
 
 var routes = require('./routes/index');
 var wechatRoute = require('./routes/wechat');
@@ -22,6 +23,7 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({secret: 'jasonviatroy', cookie: {maxAge: 60000}}));
 app.use('/', routes);
 app.use('/test', testRoute);
 app.use('/wechat', wechatRoute);
