@@ -70,9 +70,9 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 };
 
 PostDAO.prototype.saveContent = function(post_id, content, callback){
-	Post.update({post_id: post_id}, ,{$pushAll: {content:[content]}}, {upsert:true},function(err, obj){
+	Post.update({post_id: post_id}, {$pushAll: {content:[content]}}, {upsert:true},function(err, obj){
 		callback(err, obj);
-		
+
 	});
 };
 
