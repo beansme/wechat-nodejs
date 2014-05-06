@@ -18,7 +18,7 @@ var PostSchema = new Schema({
 		headimgurl: String,
 		subscribe_time: Number,
 	},
-
+	done: {type: Number, default: 0},
 	create_date : { type: Date, default: Date.now}
 });
 
@@ -55,7 +55,7 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 				} else {
 					console.log(ret);
 					var qiniu_url = 'competition-2014.qiniudn.com';
-					var link = qiniu_url + ret.key;
+					var link = qiniu_url + '/' + ret.key;
 					if(type === 'banner') {
 						obj[0].banner = link;
 					} else {
@@ -75,3 +75,12 @@ PostDAO.prototype.saveContent = function(post_id, content, callback){
 		callback(err, obj);
 	});
 };
+
+
+PostDAO.prototype.done = function(post_id, callback){
+	Post.find({post_id: post_id}, function(err, obj){
+		obj[0].done = 1;
+		obj[0].save();
+		callback(err, obj);
+	});
+}

@@ -89,12 +89,13 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                     if(req.wxsession.postbanner === 1 ) {
                         
                         if(message.Content === '完成') {
+                            Post.done(postid, function(err, obj){console.log(obj)});
                             req.wxsession.postmode = 0;
                             req.wxsession.postbanner = 0;
                             req.wxsession.posttitle = 0;
                             res.reply('完成，url');
                         } else {
-                            Post.saveContent(postid, Message.Content, function(err, obj){console.log(obj)});
+                            Post.saveContent(postid, message.Content, function(err, obj){console.log(obj)});
                             res.reply('继续输入，发送取消 或 完成 结束');
                             //处理文字
                         }
