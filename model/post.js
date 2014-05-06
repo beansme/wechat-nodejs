@@ -5,7 +5,7 @@ var PostSchema = new Schema({
 	post_id: ObjectId,
 	title: String,
 	banner: String,
-	content: [{part: String}],
+	content: [{String}],
 	author: {
 		subscribe: Number, 
 		openid: String, 
@@ -70,8 +70,7 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 };
 
 PostDAO.prototype.saveContent = function(post_id, content, callback){
-	Post.find({post_id: post_id}, function(err, obj){
-		obj[0].content.push(content);
+	Post.update({post_id: post_id}, ,{$pushAll: {content:[content]}}, {upsert:true},function(err, obj){
 		callback(err, obj);
 	});
 };
