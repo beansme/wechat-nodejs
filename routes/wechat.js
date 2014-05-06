@@ -66,118 +66,141 @@ router.get('/:wechat_token', wechat('szu_token', function(req, res, next){
 
 
 router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message, req, res, next) {
-      var message = req.weixin;
-      if(req.wxsession.postmode === 1) {
-           if(req.wxsession.postbanner === 1 ) {
-              //正文
-              if(info.MsgType === 'text') {
-                 
-                  if(info.Content === '完成') {
-                    //store post
-                    res.reply('完成，url');
-                  } else if (info.Content === '取消') {
-                    req.wxsession.postmode = 0;
-                    res.reply('已取消');
-                  } else {
-                      //处理文字
-                  }
-              }
-          } else {
-              res.reply('发送图片或 取消 ');
-          }
-      }
-        if (message.Content === '屌丝') {
-            res.reply('hehe');
+        console.log(req.wxsession);
+
+        if(req.wxsession.postmode === 1) {
+            if (message.Content === '取消') {
+                req.wxsession.postmode = 0;
+                req.wxsession.postbanner = 0;
+                req.wxsession.posttitle = 0;
+                res.reply('已取消');
+            } else {
+                if(req.wxsession.posttitle === 0){
+                    //store title
+                    var title = message.Content;
+                    req.wxsession.posttitle = 1;
+                    res.reply('标题为'+title+' 请上传图片banner');
+                } else {
+                    if(req.wxsession.postbanner === 1 ) {
+                     
+                        if(message.Content === '完成') {
+                            //store post
+                            res.reply('完成，url');
+                        } else {
+                            res.reply('继续输入，发送取消 或 完成 结束');
+                            //处理文字
+                        }
+                    } else {
+                        res.reply('发送图片或 取消 ');
+                    } 
+                }
+                
+            }
         }
-        if(message.Content == '发布') {
+        
+        if(message.Content === '发布') {
             req.wxsession.postmode = 1;
-            req.wxsession.postbanner === 0;
-            res.reply('进入发布模式，请上传banner图片');
+            req.wxsession.postbanner = 0;
+            req.wxsession.posttitle = 0;
+            res.reply('进入发布模式，请输入标题');
         }
+
+        res.end();
 
     }).voice(function (message, req, res, next) {
      
     }).image(function (message, req, res, next) {
+        
+        var API = require('wechat').API;
+        var qiniu = require('../controller/qiniu');
+        var api = new API('wx380c0d5a96fccbf5', 'd12942b505f8fcc98e77918ddd0ab0f8');
+        api.getMedia(media_id, function(err, result){
+            qiniu.upload(result, null, qiniu.uptoken, function(err, ret){
+                if(err){
+                    console.log(err);
+                } else {
+                    console.log(ret);
+                    var qiniu_url = '';
+                    ret.key;
+                }
+            });
+        });
+
         if(req.wxsession.postmode === 1) {
-             if(req.wxsession.postbanner === 1 ) {
+            if(req.wxsession.postbanner === 1 ) {
                 //正文图片
                 res.reply('正文图片');
-                
-             } else {
+            } else {
                 req.wxsession.postbanner = 1
-                res.reply('请输入正文');
-             }
+                if(req.wxsession.posttitle === 0){
+                    res.reply('请输入标题');
+                } else {
+                    res.reply('请输入正文');
+                }
+                
+            }
          }
         
         //处理图片
-        // var Message = require('../model/message');
-        // Message.save(message, function(err, result){console.log(result)});
-        //     var API = require('wechat').API;
-        //     var qiniu = require('../controller/qiniu');
-        //     var api = new API('wx380c0d5a96fccbf5', 'd12942b505f8fcc98e77918ddd0ab0f8');
-        //     api.getMedia('2AFTZKiM-tmhGkPSxM0uaifF1NsgqWyU-FPFdH4_O8Sh3cMSU8ipoN0zni3w-n4l', function(err, result){
-        //     qiniu.upload(result, null, qiniu.uptoken, function(err, ret){
-        //         //save to database
-        //         console.log(err);
-        //         console.log(ret);
-        //     });
-        //     });
+        var Message = require('../model/message');
+        Message.save(message, function(err, result){console.log(result)});
+            
     }).location(function (message, req, res, next) {
       
     }).link(function (message, req, res, next) {
        
     }).event(function (message, req, res, next) {
-        var event = message.Event;
-        var openid = message.FromUserName;
-        var client = req.client;
-        var Reply = require('../model/reply');
+        // var event = message.Event;
+        // var openid = message.FromUserName;
+        // var client = req.client;
+        // var Reply = require('../model/reply');
 
-        if(event === 'subscribe') {
-            redisClient.incr(req.client.client_id+':new.subscribe');
-            var User = require('../model/user');
-            var API = require('wechat').API;
-            var api = new API(client.appid, client.appsecret);
-            User.subscribe(openid, client.client_id, api, function(err, obj){
-                if(err){
-                    console.log()
-                } else {
-                    Reply.handle('subscribe', message, client, function(err, done){
-                        if(err){
-                            console.log(err);
-                        } else {
-                            if(done) {
-                                //todo redis record
-                            }
-                        }
-                    });
-                }
-            });
-        }
+        // if(event === 'subscribe') {
+        //     redisClient.incr(req.client.client_id+':new.subscribe');
+        //     var User = require('../model/user');
+        //     var API = require('wechat').API;
+        //     var api = new API(client.appid, client.appsecret);
+        //     User.subscribe(openid, client.client_id, api, function(err, obj){
+        //         if(err){
+        //             console.log()
+        //         } else {
+        //             Reply.handle('subscribe', message, client, function(err, done){
+        //                 if(err){
+        //                     console.log(err);
+        //                 } else {
+        //                     if(done) {
+        //                         //todo redis record
+        //                     }
+        //                 }
+        //             });
+        //         }
+        //     });
+        // }
 
-        if(event === 'unsubscribe') {
-            redisClient.incr(req.client.client_id+':new.unsubscribe');
-            var User = require('../model/user');
-            User.unsubscribe(openid, function(err){
-                if(err){
-                    console.log()
-                }
-            });
-        }
+        // if(event === 'unsubscribe') {
+        //     redisClient.incr(req.client.client_id+':new.unsubscribe');
+        //     var User = require('../model/user');
+        //     User.unsubscribe(openid, function(err){
+        //         if(err){
+        //             console.log()
+        //         }
+        //     });
+        // }
 
-        if(event === 'CLICK') {
-           Reply.handle(message.EventKey, message, client, function(err, done){
-                if(err){
-                    console.log(err);
-                } else {
-                    if(done) {
-                        //todo redis record
-                    }
-                }
-           });
-        }
+        // if(event === 'CLICK') {
+        //    Reply.handle(message.EventKey, message, client, function(err, done){
+        //         if(err){
+        //             console.log(err);
+        //         } else {
+        //             if(done) {
+        //                 //todo redis record
+        //             }
+        //         }
+        //    });
+        // }
         
-        res.writeHead(200);
-        res.end();
+        // res.writeHead(200);
+        // res.end();
 
       // message为事件内容
       // { ToUserName: 'gh_d3e07d51b513',
@@ -202,119 +225,119 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
 //
 //***** 
 
-router.get('/:wechat_token', function(req, res){
+// router.get('/:wechat_token', function(req, res){
 
-    var message = {ToUserName: 'gh_44e8155eca9d',FromUserName: 'o094_t0a2KTqu2OKLHgYlgoi2j_0',CreateTime: '1359125035',MsgType: 'text',Content: 'test',MsgId: '5837397576500011341'};
-    // var message = {ToUserName: 'gh_44e8155eca9d',FromUserName: 'o094_t0a2KTqu2OKLHgYlgoi2j_0',CreateTime: '1359125035',MsgType: 'event',Event: 'unsubscribe'};
-    var wechatKeyword = message.Content;
+//     var message = {ToUserName: 'gh_44e8155eca9d',FromUserName: 'o094_t0a2KTqu2OKLHgYlgoi2j_0',CreateTime: '1359125035',MsgType: 'text',Content: 'test',MsgId: '5837397576500011341'};
+//     // var message = {ToUserName: 'gh_44e8155eca9d',FromUserName: 'o094_t0a2KTqu2OKLHgYlgoi2j_0',CreateTime: '1359125035',MsgType: 'event',Event: 'unsubscribe'};
+//     var wechatKeyword = message.Content;
 
-    var Keyword = require('../model/keyword');
+//     var Keyword = require('../model/keyword');
 
 
 
-    // var event = message.Event;
-    var openid = message.FromUserName;
-    var client = req.client;
+//     // var event = message.Event;
+//     var openid = message.FromUserName;
+//     var client = req.client;
 
-    // if(event === 'subscribe') {
-    //     var User = require('../model/user');
-    //     var API = require('wechat').API;
-    //     var api = new API(client.appid, client.appsecret);
-    //     User.subscribe(openid, client.client_id, api, function(err, obj){
-    //         if(err){
-    //             console.log()
-    //         }
-    //     });
-    // }
+//     // if(event === 'subscribe') {
+//     //     var User = require('../model/user');
+//     //     var API = require('wechat').API;
+//     //     var api = new API(client.appid, client.appsecret);
+//     //     User.subscribe(openid, client.client_id, api, function(err, obj){
+//     //         if(err){
+//     //             console.log()
+//     //         }
+//     //     });
+//     // }
 
-    // if(event === 'unsubscribe') {
-    //     var User = require('../model/user');
-    //     User.unsubscribe(openid, function(err){console.log(err)});
-    // } 
+//     // if(event === 'unsubscribe') {
+//     //     var User = require('../model/user');
+//     //     User.unsubscribe(openid, function(err){console.log(err)});
+//     // } 
 
-    if(message.MsgType === 'text') {
-        Keyword.handle(message, client, function(err, done){
-            if(!done) {
-                var Reply = require('../model/reply');
-                Reply.handle('text', message, req.client, function(){});
-            }
-        });
-        // Keyword.handle(message, client, function(){});
-        res.writeHead(200);
-        res.end();
-        // Keyword.findByKeyword(wechatKeyword, client.client_id, function(err, keywords){
-        //     if (err) {
-        //         console.log(err);
-        //     } else {
-        //         var is_reply = 1;
-        //         if(keywords.length === 0){
-        //             is_reply = 0;
-        //             saveMessage(message, is_reply);
-        //         } else {
-        //            // var API = require('wechat').API;
-        //            // var api = new API('wx380c0d5a96fccbf5', 'd12942b505f8fcc98e77918ddd0ab0f8');
-        //            // var api = new API(client.appid, client.appsecret);
-        //            var openid = message.FromUserName;
-        //            var media = new Array();
-        //            media.text = new Array();
-        //            for(var i = 0; i < keywords.length; i++){
-        //                //所有待回复文字合并为数组
-        //                media.text = media.text.concat(keywords[i].media.text);
-        //            }
-        //            replyMeida(client, openid, media); 
-        //         }
+//     if(message.MsgType === 'text') {
+//         Keyword.handle(message, client, function(err, done){
+//             if(!done) {
+//                 var Reply = require('../model/reply');
+//                 Reply.handle('text', message, req.client, function(){});
+//             }
+//         });
+//         // Keyword.handle(message, client, function(){});
+//         res.writeHead(200);
+//         res.end();
+//         // Keyword.findByKeyword(wechatKeyword, client.client_id, function(err, keywords){
+//         //     if (err) {
+//         //         console.log(err);
+//         //     } else {
+//         //         var is_reply = 1;
+//         //         if(keywords.length === 0){
+//         //             is_reply = 0;
+//         //             saveMessage(message, is_reply);
+//         //         } else {
+//         //            // var API = require('wechat').API;
+//         //            // var api = new API('wx380c0d5a96fccbf5', 'd12942b505f8fcc98e77918ddd0ab0f8');
+//         //            // var api = new API(client.appid, client.appsecret);
+//         //            var openid = message.FromUserName;
+//         //            var media = new Array();
+//         //            media.text = new Array();
+//         //            for(var i = 0; i < keywords.length; i++){
+//         //                //所有待回复文字合并为数组
+//         //                media.text = media.text.concat(keywords[i].media.text);
+//         //            }
+//         //            replyMeida(client, openid, media); 
+//         //         }
 
-        //         res.writeHead(200);
-        //         res.end();
-        //     }
-        // });
-    }
+//         //         res.writeHead(200);
+//         //         res.end();
+//         //     }
+//         // });
+//     }
 
    
-});
+// });
 
 
-router.get('/', function(req, res) {
-    var redis = require("redis"),
-        client = redis.createClient(6379, '127.0.0.1', 0);
+// router.get('/', function(req, res) {
+//     var redis = require("redis"),
+//         client = redis.createClient(6379, '127.0.0.1', 0);
      
 
-    /*插入数据*/
-        if(client.exists('view')){
-            client.incrby('view', 1);
-            console.log(client.exists('view'));
-        } else {
-            console.log('set');
-            client.set('view', 1);
-        }
+//     /*插入数据*/
+//         if(client.exists('view')){
+//             client.incrby('view', 1);
+//             console.log(client.exists('view'));
+//         } else {
+//             console.log('set');
+//             client.set('view', 1);
+//         }
 
-        client.get('view', function(err, result){
+//         client.get('view', function(err, result){
 
-                res.send(result);
-        });
-    // var API = require('wechat').API;
-    // var api = new API('wx380c0d5a96fccbf5', 'd12942b505f8fcc98e77918ddd0ab0f8');
-    // api.getUser('o094_t0a2KTqu2OKLHgYlgoi2j_0', function(err, result){
-    //     if(err)
-    //         console.log(err);
-    //     else 
-    //         res.send(result);
-    // });
-    // 
-    // api.sendText('o094_t0a2KTqu2OKLHgYlgoi2j_0', "hello", function(err, result){
-    //     if(err)
-    //         console.log(err);
-    //     else 
-    //         res.send(result);
-    // });
-    // api.list();
-});
+//                 res.send(result);
+//         });
+//     // var API = require('wechat').API;
+//     // var api = new API('wx380c0d5a96fccbf5', 'd12942b505f8fcc98e77918ddd0ab0f8');
+//     // api.getUser('o094_t0a2KTqu2OKLHgYlgoi2j_0', function(err, result){
+//     //     if(err)
+//     //         console.log(err);
+//     //     else 
+//     //         res.send(result);
+//     // });
+//     // 
+//     // api.sendText('o094_t0a2KTqu2OKLHgYlgoi2j_0', "hello", function(err, result){
+//     //     if(err)
+//     //         console.log(err);
+//     //     else 
+//     //         res.send(result);
+//     // });
+//     // api.list();
+// });
 
 
 
-/**
- * end loacl test
- */
+// /**
+//  * end loacl test
+//  */
 
 
 

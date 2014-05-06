@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({secret: 'jasonviatroy', cookie: {maxAge: 60000}}));
+app.use(session({secret: 'jasonviatroy', cookie: {maxAge: 6000000}}));
 app.use('/', routes);
 app.use('/test', testRoute);
 app.use('/wechat', wechatRoute);

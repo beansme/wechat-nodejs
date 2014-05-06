@@ -31,7 +31,6 @@ UserDAO.prototype.subscribe = function(openid, client_id, api, callback) {
 					console.log(err);
 					callback(err, obj);
 				} else {
-					user.client_id = client_id;
 					User.create(user, function(err, userObj){
 						callback(null, userObj);
 					});
