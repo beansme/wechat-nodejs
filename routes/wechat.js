@@ -118,7 +118,7 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
     }).image(function (message, req, res, next) {
 
         if(req.wxsession.postmode === 1) {
-            if(req.wxsession.posttitle !== 0) {
+            if(req.wxsession.posttitle !== 1) {
                 res.reply('请输入标题');
             } else {
               var Post = require('../model/post');
