@@ -72,5 +72,6 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 PostDAO.prototype.saveContent = function(post_id, content, callback){
 	Post.find({post_id: post_id}, function(err, obj){
 		obj[0].content.push(content);
+		callback(err, obj);
 	});
 };

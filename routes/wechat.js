@@ -79,16 +79,22 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                     //store title
                     var title = message.Content;
                     req.wxsession.posttitle = 1;
-                    Post.saveTitle(title, message.FromUserName, function(err, obj){console.log(obj)});
+                    Post.saveTitle(title, message.FromUserName, function(err, obj){
+                        console.log(obj);
+                        req.wxsession.postid = obj._id;
+                    });
                     res.reply('标题为'+title+' 请上传图片banner');
                 } else {
+                    var postid = req.wxsession.postid;
                     if(req.wxsession.postbanner === 1 ) {
-                     
+                        
                         if(message.Content === '完成') {
-                            //store post
+                            req.wxsession.postmode = 0;
+                            req.wxsession.postbanner = 0;
+                            req.wxsession.posttitle = 0;
                             res.reply('完成，url');
                         } else {
-                            Post.saveContent()
+                            Post.saveContent(postid, Message.Content, function(err, obj){console.log(obj)});
                             res.reply('继续输入，发送取消 或 完成 结束');
                             //处理文字
                         }
@@ -112,23 +118,26 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
     }).image(function (message, req, res, next) {
 
         if(req.wxsession.postmode === 1) {
-            if(req.wxsession.postbanner === 1 ) {
-                //正文图片
-                res.reply('正文图片');
+            if(req.wxsession.posttitle !== 0) {
+                res.reply('请输入标题');
             } else {
-                req.wxsession.postbanner = 1
-                if(req.wxsession.posttitle === 0){
-                    res.reply('请输入标题');
-                } else {
-                    res.reply('请输入正文');
-                }
-                
+              var Post = require('../model/post');
+              var postid = req.wxsession.postid;
+              if(req.wxsession.postbanner === 1 ) {
+                  Post.saveImage(postid, 'Content', message.MediaId, function(err, result){console.log(result)});
+                  res.reply('正文图片');
+              } else {
+                  req.wxsession.postbanner = 1
+                  Post.saveImage(postid, 'banner', message.MediaId, function(err, result){console.log(result)});
+                  res.reply('请输入正文');
+              }  
             }
+           
          }
         
         //处理图片
-        var Message = require('../model/message');
-        Message.save(message, function(err, result){console.log(result)});
+        // var Message = require('../model/message');
+        // Message.save(message, function(err, result){console.log(result)});
             
     }).location(function (message, req, res, next) {
       
