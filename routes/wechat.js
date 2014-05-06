@@ -67,7 +67,7 @@ router.get('/:wechat_token', wechat('szu_token', function(req, res, next){
 
 router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message, req, res, next) {
         console.log(req.wxsession);
-
+        var Post = require('../model/post');
         if(req.wxsession.postmode === 1) {
             if (message.Content === '取消') {
                 req.wxsession.postmode = 0;
@@ -79,6 +79,7 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                     //store title
                     var title = message.Content;
                     req.wxsession.posttitle = 1;
+                    Post.saveTitle(title, message.FromUserName, function(err, obj){console.log(obj)});
                     res.reply('标题为'+title+' 请上传图片banner');
                 } else {
                     if(req.wxsession.postbanner === 1 ) {
@@ -87,6 +88,7 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                             //store post
                             res.reply('完成，url');
                         } else {
+                            Post.saveContent()
                             res.reply('继续输入，发送取消 或 完成 结束');
                             //处理文字
                         }
@@ -105,26 +107,9 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
             res.reply('进入发布模式，请输入标题');
         }
 
-        res.end();
-
     }).voice(function (message, req, res, next) {
      
     }).image(function (message, req, res, next) {
-        
-        var API = require('wechat').API;
-        var qiniu = require('../controller/qiniu');
-        var api = new API('wx380c0d5a96fccbf5', 'd12942b505f8fcc98e77918ddd0ab0f8');
-        api.getMedia(media_id, function(err, result){
-            qiniu.upload(result, null, qiniu.uptoken, function(err, ret){
-                if(err){
-                    console.log(err);
-                } else {
-                    console.log(ret);
-                    var qiniu_url = '';
-                    ret.key;
-                }
-            });
-        });
 
         if(req.wxsession.postmode === 1) {
             if(req.wxsession.postbanner === 1 ) {
