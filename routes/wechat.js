@@ -93,7 +93,7 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                             req.wxsession.postmode = 0;
                             req.wxsession.postbanner = 0;
                             req.wxsession.posttitle = 0;
-                            res.reply('完成，url');
+                            res.reply('完成，' + '<a href="/?openid=' + message.FromUserName + '#/article/' + req.wxsession.postid +'">点击查看文章</a>');
                         } else {
                             Post.saveContent(postid, message.Content, function(err, obj){console.log(obj)});
                             res.reply('继续输入，发送取消 或 完成 结束');
@@ -117,21 +117,16 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
     }).voice(function (message, req, res, next) {
      
     }).image(function (message, req, res, next) {
-        console.log(req.wxsession);
         if(req.wxsession.postmode === 1) {
-            console.log('image1');
             if(req.wxsession.posttitle !== 1) {
                 res.reply('请输入标题');
             } else {
-                    console.log('image3');
-
               var Post = require('../model/post');
               var postid = req.wxsession.postid;
               if(req.wxsession.postbanner === 1 ) {
                   Post.saveImage(postid, 'Content', message.MediaId, function(err, result){console.log(result)});
                   res.reply('正文图片');
               } else {
-                    console.log('image2');
                   req.wxsession.postbanner = 1;
                   Post.saveImage(postid, 'banner', message.MediaId, function(err, result){console.log(result)});
                   res.reply('请输入正文');
@@ -139,7 +134,7 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
             }
            
          }
-                    console.log('image4');
+
         
         //处理图片
         // var Message = require('../model/message');
