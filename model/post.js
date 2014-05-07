@@ -5,7 +5,7 @@ var PostSchema = new Schema({
 	post_id: ObjectId,
 	title: String,
 	banner: String,
-	content: [String],
+	content: [{type:String, content: String}],
 	author: {
 		subscribe: Number, 
 		openid: String, 
@@ -59,7 +59,7 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 					if(type === 'banner') {
 						obj[0].banner = link;
 					} else {
-						Post.update({post_id: post_id}, {$push: {content:[link]}} ,function(err, obj){
+						Post.update({post_id: post_id}, {$push: {content:{type: 'image', content: link}}} ,function(err, obj){
 								
 						});
 					}
@@ -72,7 +72,7 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 };
 
 PostDAO.prototype.saveContent = function(post_id, content, callback){
-	Post.update({post_id: post_id}, {$push: {content:[content]}} ,function(err, obj){
+	Post.update({post_id: post_id}, {$push: {content:{type: 'text', content: content}}} ,function(err, obj){
 		callback(err, obj);
 	});
 };
