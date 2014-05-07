@@ -58,7 +58,7 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 					var link = qiniu_url + '/' + ret.key;
 					console.log(obj);
 					if(type === 'banner') {
-						obj.banner = link;
+						obj.img = link;
 					} else {
 						obj.content = obj.content + '<p><img src="' + link + '"></p>';
 					}
