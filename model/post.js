@@ -77,7 +77,7 @@ PostDAO.prototype.saveContent = function(post_id, content, callback){
 	Post.findOne({post_id: post_id}, function(err, obj){
 		obj.content = obj.content + '<p>' + content +  '</p>';
 		obj.save(function(){});
-	}
+	});
 	// Post.update({post_id: post_id}, {$push: {content:['text', content]}} ,function(err, obj){
 	// 	callback(err, obj);
 	// });
