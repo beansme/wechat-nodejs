@@ -5,7 +5,7 @@ var PostSchema = new Schema({
 	post_id: ObjectId,
 	title: String,
 	img: String,
-	content: String,
+	content: { type: String, default: ''},
 	user: {
 		subscribe: Number, 
 		openid: String, 
