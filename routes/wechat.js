@@ -117,7 +117,7 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
     }).voice(function (message, req, res, next) {
      
     }).image(function (message, req, res, next) {
-        console.log('image');
+
         if(req.wxsession.postmode === 1) {
             if(req.wxsession.posttitle !== 1) {
                 res.reply('请输入标题');
@@ -128,6 +128,7 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                   Post.saveImage(postid, 'Content', message.MediaId, function(err, result){console.log(result)});
                   res.reply('正文图片');
               } else {
+                    console.log('image');
                   req.wxsession.postbanner = 1;
                   Post.saveImage(postid, 'banner', message.MediaId, function(err, result){console.log(result)});
                   res.reply('请输入正文');
