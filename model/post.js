@@ -59,7 +59,7 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 					if(type === 'banner') {
 						obj[0].banner = link;
 					} else {
-						Post.update({post_id: post_id}, {$push: {content:[$set: {type: 'image', content: link}]}} ,function(err, obj){
+						Post.update({post_id: post_id}, {$push: {content:[{$set: {type: 'image', content: link}}]}} ,function(err, obj){
 								
 						});
 					}
@@ -72,7 +72,7 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 };
 
 PostDAO.prototype.saveContent = function(post_id, content, callback){
-	Post.update({post_id: post_id}, {$push: {content:[$set: {type: 'text', content: content}]}} ,function(err, obj){
+	Post.update({post_id: post_id}, {$push: {content:[{$set: {type: 'text', content: content}}]}} ,function(err, obj){
 		callback(err, obj);
 	});
 };
