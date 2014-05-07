@@ -56,6 +56,7 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 					// console.log(ret);
 					var qiniu_url = 'competition-2014.qiniudn.com';
 					var link = qiniu_url + '/' + ret.key;
+					console.log(obj);
 					if(type === 'banner') {
 						obj.banner = link;
 					} else {
