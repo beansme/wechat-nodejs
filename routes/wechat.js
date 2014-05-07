@@ -90,6 +90,7 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                         
                         if(message.Content === '完成') {
                             Post.done(postid, function(err, obj){
+                                console.log(obj);
                                 req.wxsession.postmode = 0;
                                 req.wxsession.postbanner = 0;
                                 req.wxsession.posttitle = 0;
