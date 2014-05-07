@@ -93,9 +93,9 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                             req.wxsession.postmode = 0;
                             req.wxsession.postbanner = 0;
                             req.wxsession.posttitle = 0;
-                            res.reply('完成，' + '<a href="/?openid=' + message.FromUserName + '#/article/' + req.wxsession.postid +'">点击查看文章</a>');
+                            res.reply('完成，' + '<a href="/?openid=' + message.FromUserName + '#/article/' + postid +'">点击查看文章</a>');
                         } else {
-                            Post.saveContent(postid, message.Content, function(err, obj){console.log(obj)});
+                            Post.saveContent(postid, message.Content, function(err, obj){});
                             res.reply('继续输入，发送取消 或 完成 结束');
                             //处理文字
                         }
