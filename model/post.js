@@ -44,7 +44,7 @@ PostDAO.prototype.saveTitle = function(title, openid, callback) {
 };
 
 PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
-	Post.find({post_id: post_id}, function(err, obj){
+	Post.findOne({post_id: post_id}, function(err, obj){
 		var API = require('wechat').API;
 		var qiniu = require('../controller/qiniu');
 		var api = new API('wx380c0d5a96fccbf5', 'd12942b505f8fcc98e77918ddd0ab0f8');
@@ -53,17 +53,19 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 				if(err){
 					console.log(err);
 				} else {
-					console.log(ret);
+					// console.log(ret);
 					var qiniu_url = 'competition-2014.qiniudn.com';
 					var link = qiniu_url + '/' + ret.key;
 					if(type === 'banner') {
-						obj[0].banner = link;
+						obj.banner = link;
 					} else {
-						Post.update({post_id: post_id}, {$push: {content:['image', link]}} ,function(err, obj){
-								
-						});
+						obj.content = obj.content + '<p><img src="' + link + '"></p>';
 					}
-					obj[0].save();
+						// Post.update({post_id: post_id}, {$push: {content:['image', link]}} ,function(err, obj){
+								
+						// });
+					// }
+					obj.save();
 					callback(err, link);
 				}
 			});
@@ -72,9 +74,13 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 };
 
 PostDAO.prototype.saveContent = function(post_id, content, callback){
-	Post.update({post_id: post_id}, {$push: {content:['text', content]}} ,function(err, obj){
-		callback(err, obj);
-	});
+	Post.findOne({post_id: post_id}, function(err, obj){
+		obj.content = obj.content + '<p>' + content +  '</p>';
+		obj.save(function(){});
+	}
+	// Post.update({post_id: post_id}, {$push: {content:['text', content]}} ,function(err, obj){
+	// 	callback(err, obj);
+	// });
 };
 
 

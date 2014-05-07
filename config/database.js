@@ -5,10 +5,10 @@ module.exports = {
 		host: 'localhost',
 		port: 27017
 	},
-	mysql : {
-		host     : 'localhost',
-		user     : 'root',
-		password : '',
-		database : 'weshop'
-	}
+	// mysql : {
+	// 	host     : 'localhost',
+	// 	user     : 'root',
+	// 	password : '',
+	// 	database : 'weshop'
+	// }
 }; 
