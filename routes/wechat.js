@@ -128,7 +128,7 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                   Post.saveImage(postid, 'Content', message.MediaId, function(err, result){console.log(result)});
                   res.reply('正文图片');
               } else {
-                  req.wxsession.postbanner = 1
+                  req.wxsession.postbanner = 1;
                   Post.saveImage(postid, 'banner', message.MediaId, function(err, result){console.log(result)});
                   res.reply('请输入正文');
               }  
