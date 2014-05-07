@@ -87,5 +87,6 @@ PostDAO.prototype.saveContent = function(post_id, content, callback){
 
 PostDAO.prototype.done = function(post_id, callback){
 	Article.update({post_id: post_id}, {$set: {done: 1}}, function(err, obj){
+		callback(err, obj);
 	});
 }
