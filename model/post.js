@@ -65,7 +65,7 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 								
 						// });
 					// }
-					obj.save();
+					obj.save(function(){});
 					callback(err, link);
 				}
 			});
