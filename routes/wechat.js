@@ -81,16 +81,13 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                     req.wxsession.posttitle = 1;
                     Post.saveTitle(title, message.FromUserName, function(err, obj){
                         req.wxsession.postid = obj._id;
-                        console.log(req.wxsession);
                     });
                     res.reply('标题为'+title+' 请上传图片banner');
                 } else {
                     var postid = req.wxsession.postid;
                     if(req.wxsession.postbanner === 1 ) {
-                        
                         if(message.Content === '完成') {
                             Post.done(postid, function(err, obj){
-                                console.log(obj);
                                 req.wxsession.postmode = 0;
                                 req.wxsession.postbanner = 0;
                                 req.wxsession.posttitle = 0;
