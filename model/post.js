@@ -4,9 +4,9 @@ var Schema = mongodb.mongoose.Schema,
 var PostSchema = new Schema({
 	post_id: ObjectId,
 	title: String,
-	banner: String,
-	content: [{type:String, content: String}],
-	author: {
+	img: String,
+	content: String,
+	user: {
 		subscribe: Number, 
 		openid: String, 
 		nickname: String, 
@@ -22,7 +22,7 @@ var PostSchema = new Schema({
 	create_date : { type: Date, default: Date.now}
 });
 
-var Post = mongodb.mongoose.model("Post", PostSchema);
+var Article = mongodb.mongoose.model("Article", PostSchema);
 
 var PostDAO = function(){};
 
