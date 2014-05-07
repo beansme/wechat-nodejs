@@ -1,6 +1,6 @@
 module.exports = { 
 	mongodb : {
-		cookieSecret: 'weshop-wechat-server', 
+		cookieSecret: 'jasonviatroy', 
 		db: 'wechat-2014', 
 		host: 'localhost',
 		port: 27017
