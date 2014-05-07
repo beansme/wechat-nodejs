@@ -36,7 +36,7 @@ PostDAO.prototype.saveTitle = function(title, openid, callback) {
 			if(err){
 				console.log(err);
 			} else {
-				Post.create({'title': title, author: user}, function(err, obj){
+				Article.create({'title': title, author: user}, function(err, obj){
 					callback(err, obj);
 				});
 			}
@@ -44,7 +44,7 @@ PostDAO.prototype.saveTitle = function(title, openid, callback) {
 };
 
 PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
-	Post.findOne({post_id: post_id}, function(err, obj){
+	Article.findOne({post_id: post_id}, function(err, obj){
 		var API = require('wechat').API;
 		var qiniu = require('../controller/qiniu');
 		var api = new API('wx380c0d5a96fccbf5', 'd12942b505f8fcc98e77918ddd0ab0f8');
@@ -75,7 +75,7 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 };
 
 PostDAO.prototype.saveContent = function(post_id, content, callback){
-	Post.findOne({post_id: post_id}, function(err, obj){
+	Article.findOne({post_id: post_id}, function(err, obj){
 		obj.content = obj.content + '<p>' + content +  '</p>';
 		obj.save(function(){});
 	});
@@ -86,6 +86,6 @@ PostDAO.prototype.saveContent = function(post_id, content, callback){
 
 
 PostDAO.prototype.done = function(post_id, callback){
-	Post.update({post_id: post_id}, {$set: {done: 1}}, function(err, obj){
+	Article.update({post_id: post_id}, {$set: {done: 1}}, function(err, obj){
 	});
 }
