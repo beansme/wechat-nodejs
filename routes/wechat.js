@@ -83,7 +83,7 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                         req.wxsession.postid = obj._id;
                         console.log(obj._id);
                     });
-                    console.log(req.wxsession);
+                    console.log(req.wxsession.postid);
                     res.reply('标题为'+title+' 请上传图片banner');
                 } else {
                     var postid = req.wxsession.postid;
