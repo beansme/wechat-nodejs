@@ -120,6 +120,7 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
     }).voice(function (message, req, res, next) {
      
     }).image(function (message, req, res, next) {
+        console.log(req.wxsession);
         if(req.wxsession.postmode === 1) {
             if(req.wxsession.posttitle !== 1) {
                 res.reply('请输入标题');
