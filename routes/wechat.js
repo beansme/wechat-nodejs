@@ -127,12 +127,16 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
               var Post = require('../model/post');
               var postid = req.wxsession.postid;
               if(req.wxsession.postbanner === 1 ) {
-                  Post.saveImage(postid, 'Content', message.MediaId, function(err, result){console.log(result)});
-                  res.reply('正文图片');
+                  Post.saveImage(postid, 'Content', message.MediaId, function(err, result){
+                    console.log(postid)；
+                    res.reply('成功上传正文图片');
+                });
               } else {
                   req.wxsession.postbanner = 1;
-                  Post.saveImage(postid, 'banner', message.MediaId, function(err, result){console.log(result)});
-                  res.reply('请输入正文');
+                  Post.saveImage(postid, 'banner', message.MediaId, function(err, result){
+                    console.log(postid);
+                    res.reply('请输入正文');
+                });
               }  
             }
            
