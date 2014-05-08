@@ -111,15 +111,15 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                 
             }
         } else {
-            var link = 'http://162.243.250.86:3000/?openid=' + message.FromUserName;
-            res.reply('欢迎来到识趣社区，<a href="' + link +'">点击进入首页</a>')
-        }
-        
-        if(message.Content === '发布') {
-            req.wxsession.postmode = 1;
-            req.wxsession.postbanner = 0;
-            req.wxsession.posttitle = 0;
-            res.reply('进入发布模式，请输入标题');
+            if(message.Content === '发布') {
+                req.wxsession.postmode = 1;
+                req.wxsession.postbanner = 0;
+                req.wxsession.posttitle = 0;
+                res.reply('进入发布模式，请输入标题');
+            } else {
+                var link = 'http://162.243.250.86:3000/?openid=' + message.FromUserName;
+                res.reply('欢迎来到识趣社区，<a href="' + link +'">点击进入首页</a>')
+            }
         }
 
     }).voice(function (message, req, res, next) {
