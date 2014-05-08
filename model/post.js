@@ -2,7 +2,6 @@ var mongodb = require('./mongodb');
 var Schema = mongodb.mongoose.Schema,
 		ObjectId = Schema.ObjectId;
 var PostSchema = new Schema({
-	post_id: ObjectId,
 	title: String,
 	img: String,
 	content: { type: String, default: ''},
@@ -43,8 +42,8 @@ PostDAO.prototype.saveTitle = function(title, openid, callback) {
 		});
 };
 
-PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
-	Article.findOne({post_id: post_id}, function(err, obj){
+PostDAO.prototype.saveImage = function(_id, type, media_id, callback){
+	Article.findOne({_id: _id}, function(err, obj){
 		var API = require('wechat').API;
 		var qiniu = require('../controller/qiniu');
 		var api = new API('wx380c0d5a96fccbf5', 'd12942b505f8fcc98e77918ddd0ab0f8');
@@ -62,7 +61,7 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 					} else {
 						obj.content = obj.content + '<p><img width="100%" src="' + link + '"></p>';
 					}
-						// Post.update({post_id: post_id}, {$push: {content:['image', link]}} ,function(err, obj){
+						// Post.update({_id: _id}, {$push: {content:['image', link]}} ,function(err, obj){
 								
 						// });
 					// }
@@ -74,20 +73,20 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 	});
 };
 
-PostDAO.prototype.saveContent = function(post_id, content, callback){
-	Article.findOne({post_id: post_id}, function(err, obj){
+PostDAO.prototype.saveContent = function(_id, content, callback){
+	Article.findOne({_id: _id}, function(err, obj){
 		obj.content = obj.content + '<p>' + content +  '</p>';
 		obj.save(function(){console.log('save content')});
 		return callback(err, obj);
 	});
-	// Post.update({post_id: post_id}, {$push: {content:['text', content]}} ,function(err, obj){
+	// Post.update({_id: _id}, {$push: {content:['text', content]}} ,function(err, obj){
 	// 	callback(err, obj);
 	// });
 };
 
 
-PostDAO.prototype.done = function(post_id, callback){
-	Article.findOne({post_id: post_id}, function(err, obj){
+PostDAO.prototype.done = function(_id, callback){
+	Article.findOne({_id: _id}, function(err, obj){
 		obj.done = 1;
 		obj.save(function(){});
 		return callback(null, obj);
