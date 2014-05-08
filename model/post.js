@@ -54,13 +54,13 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 					console.log(err);
 				} else {
 					// console.log(ret);
-					var qiniu_url = 'competition-2014.qiniudn.com';
+					var qiniu_url = 'http://competition-2014.qiniudn.com';
 					var link = qiniu_url + '/' + ret.key;
 					console.log(obj);
 					if(type === 'banner') {
 						obj.img = link;
 					} else {
-						obj.content = obj.content + '<p><img src="' + link + '"></p>';
+						obj.content = obj.content + '<p><img width="100%" src="' + link + '"></p>';
 					}
 						// Post.update({post_id: post_id}, {$push: {content:['image', link]}} ,function(err, obj){
 								

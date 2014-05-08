@@ -91,7 +91,8 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                                 req.wxsession.postmode = 0;
                                 req.wxsession.postbanner = 0;
                                 req.wxsession.posttitle = 0;
-                                res.reply('完成，' + '<a href="/?openid=' + message.FromUserName + '#/article/' + obj._id +'">点击查看文章</a>');
+                                var host = 'http://162.243.250.86:3000';
+                                res.reply('完成，' + '<a href="'+ host +'/?openid=' + message.FromUserName + '#/article/' + obj._id +'">点击查看文章</a>');
                             });
                            
                         } else {
