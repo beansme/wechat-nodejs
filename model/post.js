@@ -37,7 +37,7 @@ PostDAO.prototype.saveTitle = function(title, openid, callback) {
 				console.log(err);
 			} else {
 				Article.create({'title': title, user: user}, function(err, obj){
-					callback(err, obj);
+					return callback(err, obj);
 				});
 			}
 		});
@@ -56,9 +56,9 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 					// console.log(ret);
 					var qiniu_url = 'http://competition-2014.qiniudn.com';
 					var link = qiniu_url + '/' + ret.key;
-					console.log(obj);
 					if(type === 'banner') {
 						obj.img = link;
+						console.log(link);
 					} else {
 						obj.content = obj.content + '<p><img width="100%" src="' + link + '"></p>';
 					}
@@ -66,8 +66,8 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 								
 						// });
 					// }
-					obj.save(function(){});
-					callback(err, link);
+					obj.save(function(){console.log('save image')});
+					return callback(err, link);
 				}
 			});
 		});
@@ -77,7 +77,8 @@ PostDAO.prototype.saveImage = function(post_id, type, media_id, callback){
 PostDAO.prototype.saveContent = function(post_id, content, callback){
 	Article.findOne({post_id: post_id}, function(err, obj){
 		obj.content = obj.content + '<p>' + content +  '</p>';
-		obj.save(function(){});
+		obj.save(function(){console.log('save content')});
+		return callback(err, obj);
 	});
 	// Post.update({post_id: post_id}, {$push: {content:['text', content]}} ,function(err, obj){
 	// 	callback(err, obj);
@@ -89,7 +90,7 @@ PostDAO.prototype.done = function(post_id, callback){
 	Article.findOne({post_id: post_id}, function(err, obj){
 		obj.done = 1;
 		obj.save(function(){});
-		callback(null, obj);
+		return callback(null, obj);
 	});
 
 	
