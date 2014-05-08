@@ -128,7 +128,7 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
               var postid = req.wxsession.postid;
               if(req.wxsession.postbanner === 1 ) {
                   Post.saveImage(postid, 'Content', message.MediaId, function(err, result){
-                    console.log(postid)；
+                    console.log(postid);
                     res.reply('成功上传正文图片');
                 });
               } else {
