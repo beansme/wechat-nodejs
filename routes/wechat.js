@@ -80,11 +80,14 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                     var title = message.Content;
                     req.wxsession.posttitle = 1;
                     Post.saveTitle(title, message.FromUserName, function(err, obj){
-                        req.wxsession.postid = obj._id;
-                        res.reply('标题为'+title+' 请上传图片banner');
+                        if(obj) {
+                            req.wxsession.postid = obj._id;
+                            res.reply('标题为'+title+' 请上传图片banner');
+                            console.log(req.wxsession.postid + '0');
+
+                        }
                         console.log(obj._id + '1');
                     });
-                    console.log(req.wxsession.postid + '0');
                 } else {
                     var postid = req.wxsession.postid;
                     if(req.wxsession.postbanner === 1 ) {
