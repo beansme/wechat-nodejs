@@ -81,10 +81,10 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                     req.wxsession.posttitle = 1;
                     Post.saveTitle(title, message.FromUserName, function(err, obj){
                         req.wxsession.postid = obj._id;
+                        res.reply('标题为'+title+' 请上传图片banner');
                         console.log(obj._id);
                     });
                     console.log(req.wxsession.postid);
-                    res.reply('标题为'+title+' 请上传图片banner');
                 } else {
                     var postid = req.wxsession.postid;
                     if(req.wxsession.postbanner === 1 ) {
