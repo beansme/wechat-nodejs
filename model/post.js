@@ -35,6 +35,8 @@ PostDAO.prototype.saveTitle = function(title, openid, callback) {
 			if(err){
 				console.log(err);
 			} else {
+				var User = require('./user');
+				User.save(user, function(){});
 				Article.create({'title': title, user: user}, function(err, obj){
 					return callback(err, obj);
 				});
