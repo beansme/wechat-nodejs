@@ -105,7 +105,7 @@ router.post('/:wechat_token', wechat('szu_token', wechat.text(function (message,
                             //处理文字
                         }
                     } else {
-                        res.reply('发送图片或 取消 ');
+                        res.reply('发送banner图片或 取消 ');
                     } 
                 }
                 
