@@ -25,9 +25,8 @@ UserDAO.prototype.save = function(user, callback) {
 
   User.find({openid: user.openid}, function(err, obj){
   	if(obj.length === 0){	
-  	} else {
   		User.create(user, function(err, userObj){
-  			callback(null, userObj);
+  			callback(null, 'save users');
   		});
   	}
   });
